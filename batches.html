@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batch Management – OPVS | Ontop Pharma Product Verification System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="opvs-layout">
+  <div id="opvs-sidebar"></div>
+  <div class="opvs-main">
+    <div id="opvs-topbar"></div>
+
+    <div class="opvs-content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Batch Management</div>
+          <div class="page-desc">View and manage all pharmaceutical product batches</div>
+        </div>
+        <a href="add-batch.html" class="btn btn-primary">
+          <i class="bi bi-plus-circle me-2"></i>Add New Batch
+        </a>
+      </div>
+
+      <!-- Filters -->
+      <div class="audit-filter-bar mb-3">
+        <div class="row g-2 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label">Search</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="text" id="filterSearch" class="form-control" placeholder="Batch no., product…" oninput="filterBatches()">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Batch Status</label>
+            <select id="filterStatus" class="form-select" onchange="filterBatches()">
+              <option value="">All Statuses</option>
+              <option>Approved</option>
+              <option>Pending QA Approval</option>
+              <option>Draft</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">QR Status</label>
+            <select id="filterQR" class="form-select" onchange="filterBatches()">
+              <option value="">All</option>
+              <option>Active</option>
+              <option>Expired</option>
+              <option>Not Generated</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+              <i class="bi bi-x-circle me-1"></i>Reset Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Badge Legend -->
+      <div class="d-flex gap-2 flex-wrap mb-3">
+        <span class="badge badge-draft">Draft</span>
+        <span class="badge badge-pending">Pending QA Approval</span>
+        <span class="badge badge-approved">Approved</span>
+        <span class="badge badge-rejected">Rejected</span>
+        <span class="badge badge-active">Active QR</span>
+        <span class="badge badge-expired">Expired QR</span>
+        <span class="badge badge-not-generated">Not Generated</span>
+      </div>
+
+      <!-- Table -->
+      <div class="opvs-table">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Sl.</th>
+                <th>Product</th>
+                <th>Product Code</th>
+                <th>Batch No.</th>
+                <th>Mfg. Date</th>
+                <th>Exp. Date</th>
+                <th>Status</th>
+                <th>QR Status</th>
+                <th class="text-center">Verif. Count</th>
+                <th class="action-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="batchTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Showing <span id="batchCount">3</span> batches. Demo static data.</small>
+      </div>
+    </div><!-- /content -->
+
+    <footer class="opvs-footer">
+      <span><i class="bi bi-shield-check me-1"></i>Ontop Pharmaceuticals Pvt. Ltd. | OPVS Demo v1.0</span>
+      <span>Demo Prototype | Static UI | No Production Database Connected</span>
+    </footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/batches.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', batchesPageInit);
+
+  function filterBatches() {
+    const search = document.getElementById('filterSearch').value.toLowerCase();
+    const status = document.getElementById('filterStatus').value;
+    const qr     = document.getElementById('filterQR').value;
+
+    const filtered = OPVS_STATE.batches.filter(b => {
+      const matchSearch = !search || b.batchNo.toLowerCase().includes(search) || b.productName.toLowerCase().includes(search);
+      const matchStatus = !status || b.batchStatus === status;
+      const matchQR     = !qr     || b.qrStatus === qr;
+      return matchSearch && matchStatus && matchQR;
+    });
+
+    const tbody = document.getElementById('batchTableBody');
+    tbody.innerHTML = filtered.map((b, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>
+          <div class="fw-semibold">${b.productName}</div>
+          <small class="text-muted">${b.genericName.substring(0, 38)}…</small>
+        </td>
+        <td><code>${b.productCode}</code></td>
+        <td><strong>${b.batchNo}</strong></td>
+        <td>${b.mfgDate}</td>
+        <td>${b.expDate}</td>
+        <td>${opvsBatchStatusBadge(b.batchStatus)}</td>
+        <td>${opvsQrStatusBadge(b.qrStatus)}</td>
+        <td class="text-center">
+          ${b.verificationCount > 0 ? `<span class="badge bg-info text-dark">${b.verificationCount}</span>` : '<span class="text-muted">0</span>'}
+        </td>
+        <td class="action-col">${batchActions(b)}</td>
+      </tr>`).join('');
+
+    document.getElementById('batchCount').textContent = filtered.length;
+  }
+
+  function resetFilters() {
+    document.getElementById('filterSearch').value = '';
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterQR').value = '';
+    renderBatchTable();
+    document.getElementById('batchCount').textContent = OPVS_STATE.batches.length;
+  }
+</script>
+</body>
+</html>

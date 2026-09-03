@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Trail – OPVS | Ontop Pharma Product Verification System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="opvs-layout">
+  <div id="opvs-sidebar"></div>
+  <div class="opvs-main">
+    <div id="opvs-topbar"></div>
+
+    <div class="opvs-content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Audit Trail</div>
+          <div class="page-desc">Complete chronological log of all system activities</div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary btn-sm" onclick="exportAuditDemo()">
+            <i class="bi bi-download me-1"></i>Export Report
+          </button>
+          <span class="badge badge-approved align-self-center"><i class="bi bi-shield-check me-1"></i>GMP Compliant Log</span>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="audit-filter-bar">
+        <div class="row g-2 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label">Search Activity / Details</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="text" id="auditSearch" class="form-control" placeholder="Search…" oninput="filterAudit()">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">User</label>
+            <select id="auditUser" class="form-select" onchange="filterAudit()">
+              <option value="">All Users</option>
+              <option value="admin">admin</option>
+              <option value="qa">qa</option>
+              <option value="Public">Public</option>
+              <option value="System">System</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Activity</label>
+            <select id="auditActivity" class="form-select" onchange="filterAudit()">
+              <option value="">All Activities</option>
+              <option value="Batch Created">Batch Created</option>
+              <option value="Submitted for QA Approval">Submitted for QA</option>
+              <option value="Batch Approved">Batch Approved</option>
+              <option value="Verification Link Generated">Link Generated</option>
+              <option value="QR Verified">QR Verified</option>
+              <option value="Link Expired">Link Expired</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Batch No.</label>
+            <input type="text" id="auditBatch" class="form-control" placeholder="e.g. HNX12345" oninput="filterAudit()">
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-outline-secondary w-100" onclick="resetAuditFilters()">
+              <i class="bi bi-x-circle me-1"></i>Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Table -->
+      <div class="opvs-table">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date / Time</th>
+                <th>User</th>
+                <th>Role</th>
+                <th>Activity</th>
+                <th>Batch</th>
+                <th>Details</th>
+                <th>IP Address</th>
+              </tr>
+            </thead>
+            <tbody id="auditBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="mt-2 d-flex justify-content-between">
+        <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Showing <span id="auditCount">0</span> records. Demo static data.</small>
+        <small class="text-muted"><i class="bi bi-shield-lock me-1"></i>Audit records are tamper-proof in production. <span class="future-label">Future Feature</span></small>
+      </div>
+
+      <!-- Security Note -->
+      <div class="detail-card mt-4">
+        <div class="detail-card-header"><i class="bi bi-shield-lock me-2"></i>GMP / Regulatory Compliance Indicators</div>
+        <div class="detail-card-body">
+          <div class="row g-2">
+            <div class="col-md-4">
+              <div class="security-indicator">
+                <div class="si-icon active"><i class="bi bi-journal-check"></i></div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">Immutable Audit Log</div>
+                  <div style="font-size:11px;color:#64748b;">All actions permanently recorded</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="security-indicator si-future">
+                <div class="si-icon future"><i class="bi bi-person-badge"></i></div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">21 CFR Part 11 Ready</div>
+                  <div style="font-size:11px;color:#94a3b8;">Electronic signature support <span class="future-label">Future</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="security-indicator si-future">
+                <div class="si-icon future"><i class="bi bi-file-earmark-lock2"></i></div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">Data Integrity (ALCOA+)</div>
+                  <div style="font-size:11px;color:#94a3b8;">Attributable, legible, contemporaneous <span class="future-label">Future</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+    <footer class="opvs-footer">
+      <span><i class="bi bi-shield-check me-1"></i>Ontop Pharmaceuticals Pvt. Ltd. | OPVS Demo v1.0</span>
+      <span>Demo Prototype | Static UI | No Production Database Connected</span>
+    </footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const activityIconMap = {
+    'Batch Created':                 { icon: 'bi-plus-circle', bg: 'bg-primary-subtle text-primary' },
+    'Submitted for QA Approval':     { icon: 'bi-send',        bg: 'bg-warning-subtle text-warning' },
+    'Batch Approved':                { icon: 'bi-check-circle',bg: 'bg-success-subtle text-success' },
+    'Verification Link Generated':   { icon: 'bi-qr-code',     bg: 'bg-info-subtle text-info' },
+    'QR Verified':                   { icon: 'bi-shield-check',bg: 'bg-success-subtle text-success' },
+    'Link Expired':                  { icon: 'bi-x-circle',    bg: 'bg-danger-subtle text-danger' }
+  };
+
+  function renderAuditTable(records) {
+    const tbody = document.getElementById('auditBody');
+    if (!records.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">No records found.</td></tr>';
+      document.getElementById('auditCount').textContent = 0;
+      return;
+    }
+    tbody.innerHTML = records.map((r, i) => {
+      const cfg = activityIconMap[r.activity] || { icon: 'bi-activity', bg: 'bg-secondary-subtle text-secondary' };
+      return `
+        <tr>
+          <td>${i + 1}</td>
+          <td><span style="font-size:12px;font-family:monospace;">${r.datetime}</span></td>
+          <td><code>${r.user}</code></td>
+          <td><small class="text-muted">${r.role}</small></td>
+          <td>
+            <span class="${cfg.bg} px-2 py-1 rounded d-inline-flex align-items-center gap-1" style="font-size:12px;">
+              <i class="bi ${cfg.icon}"></i>${r.activity}
+            </span>
+          </td>
+          <td><strong>${r.batch}</strong></td>
+          <td style="font-size:12px;max-width:220px;">${r.details}</td>
+          <td><code style="font-size:11px;">${r.ip}</code></td>
+        </tr>`;
+    }).join('');
+    document.getElementById('auditCount').textContent = records.length;
+  }
+
+  function filterAudit() {
+    const search   = document.getElementById('auditSearch').value.toLowerCase();
+    const user     = document.getElementById('auditUser').value;
+    const activity = document.getElementById('auditActivity').value;
+    const batch    = document.getElementById('auditBatch').value.toLowerCase();
+
+    const filtered = OPVS_STATE.auditTrail.filter(r => {
+      const matchSearch   = !search   || r.activity.toLowerCase().includes(search) || r.details.toLowerCase().includes(search);
+      const matchUser     = !user     || r.user === user;
+      const matchActivity = !activity || r.activity === activity;
+      const matchBatch    = !batch    || r.batch.toLowerCase().includes(batch);
+      return matchSearch && matchUser && matchActivity && matchBatch;
+    });
+
+    renderAuditTable(filtered);
+  }
+
+  function resetAuditFilters() {
+    ['auditSearch', 'auditUser', 'auditActivity', 'auditBatch'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    renderAuditTable(OPVS_STATE.auditTrail);
+  }
+
+  function exportAuditDemo() {
+    opvsToast('Demo Report – No backend connected. In production, this would generate a PDF/CSV audit report.', 'info', 5000);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const user = OPVS_AUTH.requireLogin();
+    if (!user) return;
+    opvsRenderSidebar('audit-trail.html');
+    opvsRenderTopbar('Audit Trail', [
+      { label: 'Dashboard', href: 'dashboard.html' },
+      { label: 'Audit Trail' }
+    ]);
+    renderAuditTable(OPVS_STATE.auditTrail);
+  });
+</script>
+</body>
+</html>

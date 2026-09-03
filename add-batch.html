@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Batch – OPVS | Ontop Pharma Product Verification System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="opvs-layout">
+  <div id="opvs-sidebar"></div>
+  <div class="opvs-main">
+    <div id="opvs-topbar"></div>
+
+    <div class="opvs-content">
+      <div class="page-header">
+        <div>
+          <div class="page-title" id="formTitle">Add New Batch</div>
+          <div class="page-desc">Enter complete pharmaceutical product and batch information</div>
+        </div>
+        <div class="demo-banner"><i class="bi bi-info-circle me-1"></i>Fields pre-filled with demo data</div>
+      </div>
+
+      <form id="batchForm" onsubmit="return false;">
+
+        <!-- Product Information -->
+        <div class="opvs-form-section">
+          <div class="form-section-header">
+            <i class="bi bi-capsule"></i> Product Information
+          </div>
+          <div class="form-section-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Product Name <span class="text-danger">*</span></label>
+                <input type="text" id="field-productName" class="form-control" value="NORMAXIN" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Unique Product Identification Code <span class="text-danger">*</span></label>
+                <input type="text" id="field-productCode" class="form-control" value="ONT-NORM-001" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Brand Name</label>
+                <input type="text" id="field-brandName" class="form-control" value="NORMAXIN">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Proper / Generic Name <span class="text-danger">*</span></label>
+                <input type="text" id="field-genericName" class="form-control" value="CLIDINIUM BROMIDE, CHLORDIAZEPOXIDE &amp; DICYCLOMINE HYDROCHLORIDE TABLETS" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Dosage Form</label>
+                <select id="field-dosageForm" class="form-select">
+                  <option selected>Tablets</option>
+                  <option>Capsules</option>
+                  <option>Syrup</option>
+                  <option>Injection</option>
+                  <option>Ointment</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Pack Size</label>
+                <input type="text" id="field-packSize" class="form-control" value="10 Tablets">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Market</label>
+                <select id="field-market" class="form-select">
+                  <option selected>India</option>
+                  <option>Export – GCC</option>
+                  <option>Export – Africa</option>
+                  <option>Export – SEA</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manufacturer Information -->
+        <div class="opvs-form-section">
+          <div class="form-section-header">
+            <i class="bi bi-building"></i> Manufacturer Information
+          </div>
+          <div class="form-section-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Manufacturer Name <span class="text-danger">*</span></label>
+                <input type="text" id="field-manufacturer" class="form-control" value="Ontop Pharmaceuticals Pvt. Ltd." required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Manufacturing Licence Number <span class="text-danger">*</span></label>
+                <input type="text" id="field-licence" class="form-control" value="23/SRD/TS/2017/F/G" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Manufacturer Address</label>
+                <textarea id="field-address" class="form-control" rows="2">Plot No. 120/B, S. V. Co-operative Industrial Area, IDA Bollaram, Telangana</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Information -->
+        <div class="opvs-form-section">
+          <div class="form-section-header">
+            <i class="bi bi-box-seam"></i> Batch Information
+          </div>
+          <div class="form-section-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">Batch Number <span class="text-danger">*</span></label>
+                <input type="text" id="field-batchNo" class="form-control font-mono" value="HNX12347" required placeholder="e.g. HNX12347">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Manufacturing Date <span class="text-danger">*</span></label>
+                <input type="text" id="field-mfgDate" class="form-control" value="01/10/2026" placeholder="DD/MM/YYYY" required>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Expiry Date <span class="text-danger">*</span></label>
+                <input type="text" id="field-expDate" class="form-control" value="30/09/2028" placeholder="DD/MM/YYYY" required>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <input type="text" id="batchStatusField" class="form-control" value="Draft" readonly style="background:#f1f5f9;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security / GMP Indicators -->
+        <div class="opvs-form-section">
+          <div class="form-section-header">
+            <i class="bi bi-shield-lock"></i> System Controls <span class="future-label">Future Production Feature</span>
+          </div>
+          <div class="form-section-body">
+            <div class="row g-2">
+              <div class="col-md-4">
+                <div class="security-indicator">
+                  <div class="si-icon active"><i class="bi bi-check2-circle"></i></div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;">Audit Trail</div>
+                    <div style="font-size:11px;color:#64748b;">All changes recorded</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="security-indicator si-future">
+                  <div class="si-icon future"><i class="bi bi-lock"></i></div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;">Record Locking</div>
+                    <div style="font-size:11px;color:#94a3b8;">Locked after QA Approval <span class="future-label">Future</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="security-indicator si-future">
+                  <div class="si-icon future"><i class="bi bi-person-check"></i></div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;">Role-Based Access</div>
+                    <div style="font-size:11px;color:#94a3b8;">Edit restricted to Admin <span class="future-label">Future</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex gap-3 flex-wrap">
+          <button type="button" class="btn btn-success btn-lg" onclick="saveDraft()">
+            <i class="bi bi-floppy me-2"></i>Save Draft
+          </button>
+          <button type="button" class="btn btn-primary btn-lg" onclick="submitForQA()">
+            <i class="bi bi-send me-2"></i>Submit for QA Approval
+          </button>
+          <a href="batches.html" class="btn btn-outline-secondary btn-lg">
+            <i class="bi bi-x-circle me-2"></i>Cancel
+          </a>
+        </div>
+
+      </form>
+    </div><!-- /content -->
+
+    <footer class="opvs-footer">
+      <span><i class="bi bi-shield-check me-1"></i>Ontop Pharmaceuticals Pvt. Ltd. | OPVS Demo v1.0</span>
+      <span>Demo Prototype | Static UI | No Production Database Connected</span>
+    </footer>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title" id="confirmModalTitle">Confirm</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="confirmModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmModalBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/batches.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', addBatchPageInit);
+</script>
+</body>
+</html>
